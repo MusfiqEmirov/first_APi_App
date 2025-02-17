@@ -1,0 +1,19 @@
+# Python bytecode files
+*.pyc
+__pycache__/
+
+# Virtual environment
+env/
+venv/
+
+# Django migrations
+*/migrations/
+
+# VS Code settings
+.vscode/
+
+# MacOS specific files
+.DS_Store
+
+# Windows specific files
+Thumbs.db
