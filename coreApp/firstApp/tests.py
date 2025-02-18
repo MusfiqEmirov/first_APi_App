@@ -3,7 +3,7 @@ from rest_framework import status
 from firstApp.models import Product
 from django.urls import reverse
 
-
+# nezere alinmali TELEBLER!!!! serializer icinde fields mutleq 2 deyer name ve price olmalidir test etmek ucun deyiwmek lazimdir
 # mehsullarin duzgun alinib ve getirlmeyi baresinde test
 class ProductsAPIViewTest(APITestCase):
     # get methodunun test edilmesi
