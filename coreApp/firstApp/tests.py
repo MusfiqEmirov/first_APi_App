@@ -63,7 +63,38 @@ class ProductsAPIViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # error mesaji yoxlanilir
-        self.assertIn('price', response.data) # teleb olunan sahe
+        self.assertIn("price", response.data) # teleb olunan sahe
+
+
+# idye gore melumat elde elemek ucun test
+class ProductRevealerAPIViewTest(APITestCase):
+    def setUp(self):
+        # yene testden evvel bezi mehsullaar elav edirik
+        self.product1 = Product.objects.create(name="product1",price=10)
+        self.product2 = Product.objects.create(name="product2",price=20)
+
+    def test_get_product_by_id(self):
+        # idye gore dogru melumat almag
+        url = reverse("view_manager:products_id_details",args=[self.product1.id])
+        
+        #get soprgusu gonderilir
+        response = self.client.get(url)
+
+        # status kodunun 200 olmagi yoxlanilir
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+
+        # mehsulun duzgun qaytarilmagi yoxlanilir
+        self.assertEqual(response.data["name"],"product1")
+        self.assertEqual(response.data["proce"],10)
+
+    def test_get_product_not_found(self):
+        # eger id olmsa bize verilen cavab
+        url = reverse("view_manager:products_id_details", args=[100])  # Bu id movcu deyil
+        
+        response = self.client.get(url)
+
+        # status kodunun 404 olacagi yoxlanilir
+        self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
 
 
 
