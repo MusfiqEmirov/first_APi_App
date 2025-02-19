@@ -1,8 +1,8 @@
 from rest_framework.views import APIView,status
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
-from firstApp.models import Product
-from firstApp.serializers import ProductSerializer
+from first_app.models import Product
+from first_app.serializers import ProductSerializer
 from django.shortcuts import get_object_or_404
 
 
