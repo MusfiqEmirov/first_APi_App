@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 
 
 class ProductsAPIView(APIView):
-    # get methodu ile melumatlari getirmey
+    # get methodu ile melumatlari getirmey  
     def get(self, request):
         products = Product.objects.all() # butun obyekctleri aliriq
         serializer = ProductSerializer(products,many=True) # birden daha cox abyekt olacagini qeyd edirik

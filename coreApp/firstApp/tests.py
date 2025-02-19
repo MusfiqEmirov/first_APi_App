@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
-from firstApp.models import Product
+from first_app.models import Product
 from django.urls import reverse
 
 # nezere alinmali TELEBLER!!!! serializer icinde fields mutleq 2 deyer name ve price olmalidir test etmek ucun deyiwmek lazimdir
@@ -85,7 +85,7 @@ class ProductRevealerAPIViewTest(APITestCase):
 
         # mehsulun duzgun qaytarilmagi yoxlanilir
         self.assertEqual(response.data["name"],"product1")
-        self.assertEqual(response.data["proce"],10)
+        self.assertEqual(response.data["price"],10)
 
     def test_get_product_not_found(self):
         # eger id olmsa bize verilen cavab
