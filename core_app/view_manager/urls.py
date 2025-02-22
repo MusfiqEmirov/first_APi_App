@@ -10,4 +10,6 @@ urlpatterns = [
 
     # category viewi
     path("categorys/", CategoryAPIView.as_view(), name="categorys"),
+    path("categorys/<int:id>/", CategoryRevealerAPIView.as_view(), name="categorys_id_details"),
+    path("categorys/<str:name>/", CategoryNameRevealerAPIView.as_view(), name="categorys_slug_details"),
 ]
