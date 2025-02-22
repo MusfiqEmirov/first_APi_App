@@ -75,5 +75,58 @@ class CategoryNameRevealerAPIView(APIView):
         return Response(serializer.data,status=status.HTTP_200_OK)    
     
 
+# Addres cagirilmasi ve elave olunmasi
+class AddressAPIview(APIView):
 
+    def get(self,request):
+        address = Adress.objects.all()
+        serializer = AddressSerializer(address, many=True)
+
+        return Response(serializer.data)
+    
+    def post(self,request):
+        serializer = AddressSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+# idye gor axtris
+class AddressRevealerAPIView(APIView):
+    def get(self, request, id):
+        address = get_object_or_404(Adress ,id=id)
+        serializer = AddressSerializer(address)
+
+        return Response(serializer.data,status=status.HTTP_200_OK)   
+
+# city  gor axtris ile axtariw ucun
+class AddressCityRevealerAPIView(APIView):
+    def get(self, request, city):
+        address = get_object_or_404(Adress, city=city)
+        serializer = AddressSerializer(address)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)   
+
+
+# Supplier cagirilmasi ve elave olunmasi
+class SupplierAPIview(APIView):
+
+    def get(self,request):
+        supplier = Supplier.objects.all()
+        serializer = SupplierSerializer(supplier, many=True)
+
+        return Response(serializer.data)
+    
+    def post(self,request):
+        serializer = SupplierSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+    
         

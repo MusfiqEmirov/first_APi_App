@@ -30,7 +30,7 @@ class Supplier(models.Model):
         address = models.OneToOneField(Adress,null=True,on_delete=models.CASCADE) 
 
         def __str__(self):
-          return f"{self.company_name} {self.adress}" 
+          return f"{self.company_name} {self.address}" 
 
 
 class Product(models.Model):

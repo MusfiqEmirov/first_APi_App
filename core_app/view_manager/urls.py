@@ -11,5 +11,15 @@ urlpatterns = [
     # category viewi
     path("categorys/", CategoryAPIView.as_view(), name="categorys"),
     path("categorys/<int:id>/", CategoryRevealerAPIView.as_view(), name="categorys_id_details"),
-    path("categorys/<str:name>/", CategoryNameRevealerAPIView.as_view(), name="categorys_slug_details"),
+    path("categorys/<str:name>/", CategoryNameRevealerAPIView.as_view(), name="categorys_name_details"),
+
+    # address viewi
+    path("address/", AddressAPIview.as_view(), name="address"),
+    path("address/<int:id>/", AddressRevealerAPIView.as_view(), name="address_id_details"),
+    path("address/<str:city>/", AddressCityRevealerAPIView.as_view(), name="address_city_details"),
+
+    # supplier viewi
+    path("supplier/", SupplierAPIview.as_view(), name="supplier"),
+    # path("supplier/<int:id>/", SupplierRevealerAPIView.as_view(), name="supplier_id_details"),
+    # path("supplier/<str:company_name>/", SupplierCompanyNameRevealerAPIView.as_view(), name="supplier_city_details"),
 ]
