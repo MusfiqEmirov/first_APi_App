@@ -1,8 +1,8 @@
-from rest_framework.views import APIView,status
+from rest_framework.views import APIView, status
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
-from first_app.models import Product
-from first_app.serializers import ProductSerializer
+from first_app.models import Product, Category, Adress, Supplier
+from first_app.serializers import ProductSerializer, CategorySerializer, AddressSerializer, SupplierSerializer
 from django.shortcuts import get_object_or_404
 
 
@@ -41,3 +41,13 @@ class ProductSlugRevealerAPIView(APIView):
         serializer = ProductSerializer(product)
         
         return Response(serializer.data,status=status.HTTP_200_OK)
+    
+
+class CategoryAPIView(APIView):
+    #get ile categpryleri getirmek
+    def get(self,request):
+        categorys = Category.objects.all()
+        serializer = CategorySerializer(categorys,many=True)
+        return Response(serializer.data)
+    
+    

@@ -1,6 +1,13 @@
 from django.db import models
 # from django.utils.text import slugify
 
+__all__ = [
+     "Category",
+     "Adress",
+     "Supplier",
+     "Product"
+]
+
 
 class Category(models.Model):
     name = models.CharField(max_length=500)
@@ -20,7 +27,7 @@ class Adress(models.Model):
 
 class Supplier(models.Model):
         company_name = models.CharField(max_length=100) 
-        adress = models.OneToOneField(Adress,null=True,on_delete=models.CASCADE) 
+        address = models.OneToOneField(Adress,null=True,on_delete=models.CASCADE) 
 
         def __str__(self):
           return f"{self.company_name} {self.adress}" 
