@@ -2,7 +2,7 @@ from rest_framework.views import APIView, status
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from first_app.models import Product, Category, Adress, Supplier
-from first_app.serializers import ProductSerializer, CategorySerializer, AddressSerializer, SupplierSerializer
+from first_app.serializers import ProductSerializer, CategorySerializer, AddressSerializer, SupplierSerializer, ProductCreateSerializer
 from django.shortcuts import get_object_or_404
 
 
@@ -15,12 +15,14 @@ class ProductsAPIView(APIView):
     
     # post ile elave elemek
     def post(self,request):
-        serializer = ProductSerializer(data=request.data) #json melumatlarini evvelce parse edirik
+        serializer = ProductCreateSerializer(data=request.data) #json melumatlarini evvelce parse edirik
 
         if serializer.is_valid(): # validation gedir
             serializer.save() # ve yaddawa yazir
             return Response(serializer.data, status=status.HTTP_201_CREATED) # ugurlu melyatda 201 status kodu qaytarir ve elave olundu
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) # yox eger ugursuzdusa yalniw sorgu olaraq geri qayatrir
+    
+    
 
 
 # idye gor axtris

@@ -48,3 +48,11 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = "__all__"
+
+class ProductCreateSerializer(serializers.ModelSerializer):
+    supplier = serializers.PrimaryKeyRelatedField(queryset=Supplier.objects.all())
+    categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
+
+    class Meta:
+        model = Product
+        fields = "__all__"      
