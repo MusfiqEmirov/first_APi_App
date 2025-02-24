@@ -2,7 +2,7 @@ from rest_framework.views import APIView, status
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from first_app.models import Product, Category, Adress, Supplier
-from first_app.serializers import ProductSerializer, CategorySerializer, AddressSerializer, SupplierSerializer, ProductCreateSerializer
+from first_app.serializers import ProductSerializer, CategorySerializer, AddressSerializer, SupplierSerializer, ProductCreateSerializer, SupplierCreateSerializer
 from django.shortcuts import get_object_or_404
 
 
@@ -121,7 +121,7 @@ class SupplierAPIview(APIView):
         return Response(serializer.data)
     
     def post(self,request):
-        serializer = SupplierSerializer(data=request.data)
+        serializer = SupplierCreateSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
