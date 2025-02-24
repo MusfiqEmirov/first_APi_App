@@ -4,6 +4,7 @@ from rest_framework.exceptions import NotFound
 from first_app.models import Product, Category, Adress, Supplier
 from first_app.serializers import ProductSerializer, CategorySerializer, AddressSerializer, SupplierSerializer, ProductCreateSerializer, SupplierCreateSerializer
 from django.shortcuts import get_object_or_404
+from django.http.response import Http404
 
 
 class ProductsAPIView(APIView):
@@ -70,12 +71,18 @@ class CategoryRevealerAPIView(APIView):
     
 # name ile axtariw ucun
 class CategoryNameRevealerAPIView(APIView):
-    def get(self,request,name):
-        category = get_object_or_404(Category ,name=name)
-        serializer = CategorySerializer(category)
-        
-        return Response(serializer.data,status=status.HTTP_200_OK)    
     
+    def get(self, request, name):
+        
+        category = Category.objects.filter(name=name)  
+
+        if category.count() < 1:
+            raise Http404("secilmis category uze mehsul tapilmadi!!!!")
+        
+        products = Product.objects.filter(categories__in=category) 
+        product_serializer = ProductSerializer(products, many=True)
+        return Response(product_serializer.data, status=status.HTTP_200_OK)
+
 
 # Addres cagirilmasi ve elave olunmasi
 class AddressAPIview(APIView):
@@ -127,7 +134,24 @@ class SupplierAPIview(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class SupplierRevealerAPIView(APIView):
+    def get(self, request, id):
+        address = get_object_or_404(Adress, pk=id ) 
+        sup = Supplier.objects.get(address=address)  
+        sup_serializer = SupplierSerializer(sup)
+        return Response(sup_serializer.data, status=status.HTTP_200_OK) 
+
+
+class SupplierCompanyNameRevealerAPIView(APIView):
+
+    def get(self,request,company_name):
+        company_name = get_object_or_404(Supplier, company_name=company_name)
+        serializer = SupplierSerializer(company_name)
         
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
 
 
     
