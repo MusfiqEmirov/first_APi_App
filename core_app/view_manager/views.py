@@ -16,15 +16,37 @@ class ProductsAPIView(APIView):
     
     # post ile elave elemek
     def post(self,request):
-        serializer = ProductCreateSerializer(data=request.data) #json melumatlarini evvelce parse edirik
-
+        #json melumatlarini evvelce parse edirik
+        serializer = ProductCreateSerializer(data=request.data) 
         if serializer.is_valid(): # validation gedir
             serializer.save() # ve yaddawa yazir
-            return Response(serializer.data, status=status.HTTP_201_CREATED) # ugurlu melyatda 201 status kodu qaytarir ve elave olundu
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) # yox eger ugursuzdusa yalniw sorgu olaraq geri qayatrir
+            # ugurlu melyatda 201 status kodu qaytarir ve elave olundu
+            return Response(serializer.data, status=status.HTTP_201_CREATED) 
+         # yox eger ugursuzdusa yalniw sorgu olaraq geri qayatrir
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    # secilen mehsulu qismen yenilemek.id urlde deyilde sonradan verilir ve ona gorede update olunur
+    def patch(self, request):
+        data = request.data
+        id = data.get("id", None)
+        product = Product.objects.filter(pk=id).first()
+        serializer = ProductSerializer(product, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def delete(self, request):
+        data = request.data
+        id = data.get("id", None)
+        if id:
+            product = Product.objects.filter(id=id).first()
+            product.delete()
+            return Response({"message": "secdiyiniz mehsu; ugurla silindi!"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"error": "mehsul yoxdurr!!!"}, status=status.HTTP_400_BAD_REQUEST)
 
+        
+    
 
 # idye gor axtris
 class ProductRevealerAPIView(APIView):
@@ -61,6 +83,7 @@ class CategoryAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
 # idye gor axtris
 class CategoryRevealerAPIView(APIView):
     def get(self,request,id):
@@ -69,14 +92,15 @@ class CategoryRevealerAPIView(APIView):
 
         return Response(serializer.data,status=status.HTTP_200_OK)
     
-# name ile axtariw ucun
+
+# category secdiyiiz butun productlari getirmek
 class CategoryNameRevealerAPIView(APIView):
     
     def get(self, request, name):
-        
-        category = Category.objects.filter(name=name)  
+        # mantto many oldugu ucun filterdir
+        category = Category.objects.filter(name=name) 
 
-        if category.count() < 1:
+        if category.count() < 1: # eger secdiyimiz category yoxdusa qaytaracag cavab
             raise Http404("secilmis category uze mehsul tapilmadi!!!!")
         
         products = Product.objects.filter(categories__in=category) 
@@ -100,7 +124,8 @@ class AddressAPIview(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
 # idye gor axtris
 class AddressRevealerAPIView(APIView):
     def get(self, request, id):
@@ -108,6 +133,7 @@ class AddressRevealerAPIView(APIView):
         serializer = AddressSerializer(address)
 
         return Response(serializer.data,status=status.HTTP_200_OK)   
+
 
 # city  gor axtris ile axtariw ucun
 class AddressCityRevealerAPIView(APIView):
@@ -128,7 +154,8 @@ class SupplierAPIview(APIView):
         return Response(serializer.data)
     
     def post(self,request):
-        serializer = SupplierCreateSerializer(data=request.data)
+        # yenide yaratmagcun SerializerCreateSerilizerdennistifade olunur.cunki addresden Id gotur
+        serializer = SupplierCreateSerializer(data=request.data) 
 
         if serializer.is_valid():
             serializer.save()
@@ -144,6 +171,7 @@ class SupplierRevealerAPIView(APIView):
         return Response(sup_serializer.data, status=status.HTTP_200_OK) 
 
 
+# sirket adina gore axtaris
 class SupplierCompanyNameRevealerAPIView(APIView):
 
     def get(self,request,company_name):

@@ -15,6 +15,7 @@ class SupplierSerializer(serializers.ModelSerializer):
         model = Supplier
         fields = "__all__"
 
+
 # ONETOONE OLDUGU UCUN EVVELCE ADRESS ELAVE OLUNMALI SOSRA ONUN IDSI YAZILMALDIIR
 class SupplierCreateSerializer(serializers.ModelSerializer):
     address = serializers.PrimaryKeyRelatedField(queryset=Adress.objects.all())
@@ -27,7 +28,7 @@ class SupplierCreateSerializer(serializers.ModelSerializer):
 
 # CATEGORYS UZERINDE CRUD EMELIYATLARI
 class CategorySerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Category
         fields = "__all__"
