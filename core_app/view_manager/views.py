@@ -83,6 +83,32 @@ class CategoryAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    # secilen categoiyani qismen yenilemek.id urlde deyilde sonradan verilir ve ona gorede update olunur
+    def patch(self, request):
+        data = request.data
+        id = data.get("id", None)
+        category = Category.objects.filter(pk=id).first()
+        serializer = CategorySerializer(category,
+                                         data=request.data,
+                                         partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # categoryinain ozu ancaq id ile silinir
+    def delete(self, request):
+        data = request.data
+        id = data.get("id", None)
+        if id:
+            category = Category.objects.filter(id=id).first()
+            category.delete()
+            return Response({"message": "secdiyiniz categoiya ugurla silindi!"}, 
+                            status=status.HTTP_204_NO_CONTENT)
+        return Response({"error": "categoriya yoxdur yoxdurr!!!"},
+                         status=status.HTTP_400_BAD_REQUEST)
+        
+    
 
 # idye gor axtris
 class CategoryRevealerAPIView(APIView):
@@ -99,13 +125,22 @@ class CategoryNameRevealerAPIView(APIView):
     def get(self, request, name):
         # mantto many oldugu ucun filterdir
         category = Category.objects.filter(name=name) 
-
-        if category.count() < 1: # eger secdiyimiz category yoxdusa qaytaracag cavab
+        if not category.exists(): # eger secdiyimiz category yoxdusa qaytaracag cavab
             raise Http404("secilmis category uze mehsul tapilmadi!!!!")
-        
         products = Product.objects.filter(categories__in=category) 
         product_serializer = ProductSerializer(products, many=True)
         return Response(product_serializer.data, status=status.HTTP_200_OK)
+    
+    # secilmiw categoryde olan butun productlarin silinmesi
+    def delete(self, request, name):
+        category = Category.objects.filter(name=name)
+        if not category.exists():
+
+            raise Http404("secilmiw category uzre mehsul tapilmadi")
+        products = Product.objects.filter(categories__in=category)
+        products.delete()
+        return Response({"message": "secdiyiniz categoriyay  uygun butun productlar silindi silindi!"},
+                         status=status.HTTP_204_NO_CONTENT)
 
 
 # Addres cagirilmasi ve elave olunmasi
@@ -124,6 +159,28 @@ class AddressAPIview(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+     # secilen adreesi qismen yenilemek.id urlde deyilde sonradan verilir ve ona gorede update olunur
+    def patch(self, request):
+        data = request.data
+        id = data.get("id", None)
+        product = Adress.objects.filter(pk=id).first()
+        serializer = AddressSerializer(product, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request):
+        data = request.data
+        id = data.get("id", None)
+        if id:
+            address = Adress.objects.filter(id=id).first()
+            address.delete()
+            return Response({"message": "secdiyiniz adress ugurla silindi!"}, 
+                            status=status.HTTP_204_NO_CONTENT)
+        return Response({"error": "adress yoxdurr!!!"}, 
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
 # idye gor axtris
@@ -162,13 +219,36 @@ class SupplierAPIview(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+     # secilen adreesi qismen yenilemek.id urlde deyilde sonradan verilir ve ona gorede update olunur
+    def patch(self, request):
+        data = request.data
+        id = data.get("id", None)
+        supplier = Supplier.objects.filter(pk=id).first()
+        serializer = SupplierSerializer(supplier, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request):
+        data = request.data
+        id = data.get("id", None)
+        if id:
+            supplier = Supplier.objects.filter(id=id).first()
+            supplier.delete()
+            return Response({"message": "secdiyiniz sirket ugurla silindi!"}, 
+                            status=status.HTTP_204_NO_CONTENT)
+        return Response({"error": "sirket yoxdurr!!!"}, 
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    
 
 class SupplierRevealerAPIView(APIView):
     def get(self, request, id):
         address = get_object_or_404(Adress, pk=id ) 
-        sup = Supplier.objects.get(address=address)  
-        sup_serializer = SupplierSerializer(sup)
-        return Response(sup_serializer.data, status=status.HTTP_200_OK) 
+        active_supplier = Supplier.objects.get(address=address)  
+        merchant_serializer = SupplierSerializer(active_supplier)
+        return Response(merchant_serializer.data, status=status.HTTP_200_OK) 
 
 
 # sirket adina gore axtaris
