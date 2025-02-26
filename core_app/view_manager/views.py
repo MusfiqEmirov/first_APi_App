@@ -46,15 +46,11 @@ class ProductsAPIView(APIView):
         return Response({"error": "mehsul yoxdurr!!!"}, status=status.HTTP_400_BAD_REQUEST)
 
         
-    
-
 # idye gor axtris
 class ProductRevealerAPIView(APIView):
     def get(self,request,id):
         product = get_object_or_404(Product ,id=id)
-
         serializer = ProductSerializer(product)
-
         return Response(serializer.data,status=status.HTTP_200_OK)
     
 
@@ -62,9 +58,7 @@ class ProductRevealerAPIView(APIView):
 class ProductSlugRevealerAPIView(APIView):
     def get(self,request,slug):
         product = get_object_or_404(Product ,slug=slug)
-
         serializer = ProductSerializer(product)
-        
         return Response(serializer.data,status=status.HTTP_200_OK)
     
 
@@ -107,15 +101,13 @@ class CategoryAPIView(APIView):
                             status=status.HTTP_204_NO_CONTENT)
         return Response({"error": "categoriya yoxdur yoxdurr!!!"},
                          status=status.HTTP_400_BAD_REQUEST)
-        
-    
+
 
 # idye gor axtris
 class CategoryRevealerAPIView(APIView):
     def get(self,request,id):
         category = get_object_or_404(Category ,id=id)
         serializer = CategorySerializer(category)
-
         return Response(serializer.data,status=status.HTTP_200_OK)
     
 
@@ -135,7 +127,6 @@ class CategoryNameRevealerAPIView(APIView):
     def delete(self, request, name):
         category = Category.objects.filter(name=name)
         if not category.exists():
-
             raise Http404("secilmiw category uzre mehsul tapilmadi")
         products = Product.objects.filter(categories__in=category)
         products.delete()
@@ -149,12 +140,10 @@ class AddressAPIview(APIView):
     def get(self,request):
         address = Adress.objects.all()
         serializer = AddressSerializer(address, many=True)
-
         return Response(serializer.data)
     
     def post(self,request):
         serializer = AddressSerializer(data=request.data)
-
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -188,7 +177,6 @@ class AddressRevealerAPIView(APIView):
     def get(self, request, id):
         address = get_object_or_404(Adress ,id=id)
         serializer = AddressSerializer(address)
-
         return Response(serializer.data,status=status.HTTP_200_OK)   
 
 
@@ -207,7 +195,6 @@ class SupplierAPIview(APIView):
     def get(self,request):
         supplier = Supplier.objects.all()
         serializer = SupplierSerializer(supplier, many=True)
-
         return Response(serializer.data)
     
     def post(self,request):
@@ -219,7 +206,7 @@ class SupplierAPIview(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-     # secilen adreesi qismen yenilemek.id urlde deyilde sonradan verilir ve ona gorede update olunur
+     # secilen sirkeeti qismen yenilemek.id urlde deyilde sonradan verilir ve ona gorede update olunur
     def patch(self, request):
         data = request.data
         id = data.get("id", None)
@@ -242,8 +229,9 @@ class SupplierAPIview(APIView):
                         status=status.HTTP_400_BAD_REQUEST)
 
     
-
+# secilmiw adress IDsine gore sirketi tapmag
 class SupplierRevealerAPIView(APIView):
+
     def get(self, request, id):
         address = get_object_or_404(Adress, pk=id ) 
         active_supplier = Supplier.objects.get(address=address)  
@@ -259,7 +247,7 @@ class SupplierCompanyNameRevealerAPIView(APIView):
         serializer = SupplierSerializer(company_name)
         
         return Response(serializer.data,status=status.HTTP_200_OK)
-
+    
 
 
     
