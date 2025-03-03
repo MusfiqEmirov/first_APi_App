@@ -6,15 +6,14 @@ from first_app.serializers import ProductSerializer, CategorySerializer, Address
 from django.shortcuts import get_object_or_404
 from django.http.response import Http404
 
-from django.core.mail import send_mail
 from django.conf import settings
 
-from notifications.notify import (
-    send_product_creation_email,
-    send_category_creation_email,
-    send_address_creation_email,
-    send_supplier_creation_email,
-)
+# from notifications.notify import (
+#     send_product_creation_email,
+#     send_category_creation_email,
+#     send_address_creation_email,
+#     send_supplier_creation_email,
+# )
 
 from django.db import transaction
 
@@ -33,7 +32,6 @@ class ProductsAPIView(APIView):
         if serializer.is_valid(): # validation gedir
             try:
                 with transaction.atomic(): # ya hamisi isleyecek ve mail gedecek
-                    send_product_creation_email()
                     # ugurlu melyatda 201 status kodu qaytarir ve elave olundu
                     return Response(serializer.data, status=status.HTTP_201_CREATED) 
             except Exception as e: # ya hec biri iwlemeiyecek mailde getm,eyecek
@@ -92,7 +90,6 @@ class CategoryAPIView(APIView):
         serializer = CategorySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            send_category_creation_email()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -166,7 +163,6 @@ class AddressAPIview(APIView):
         serializer = AddressSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            send_address_creation_email()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -225,7 +221,6 @@ class SupplierAPIview(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            send_supplier_creation_email()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
