@@ -6,6 +6,18 @@ from first_app.serializers import ProductSerializer, CategorySerializer, Address
 from django.shortcuts import get_object_or_404
 from django.http.response import Http404
 
+from django.core.mail import send_mail
+from django.conf import settings
+
+from notifications.notify import (
+    send_product_creation_email,
+    send_category_creation_email,
+    send_address_creation_email,
+    send_supplier_creation_email,
+)
+
+from django.db import transaction
+
 
 class ProductsAPIView(APIView):
     # get methodu ile melumatlari getirmey  
@@ -19,9 +31,15 @@ class ProductsAPIView(APIView):
         #json melumatlarini evvelce parse edirik
         serializer = ProductCreateSerializer(data=request.data) 
         if serializer.is_valid(): # validation gedir
-            serializer.save() # ve yaddawa yazir
-            # ugurlu melyatda 201 status kodu qaytarir ve elave olundu
-            return Response(serializer.data, status=status.HTTP_201_CREATED) 
+            try:
+                with transaction.atomic(): # ya hamisi isleyecek ve mail gedecek
+                    send_product_creation_email()
+                    # ugurlu melyatda 201 status kodu qaytarir ve elave olundu
+                    return Response(serializer.data, status=status.HTTP_201_CREATED) 
+            except Exception as e: # ya hec biri iwlemeiyecek mailde getm,eyecek
+                # eger mail gonderme alinmazsa
+                transaction.set_rollback(True)
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
          # yox eger ugursuzdusa yalniw sorgu olaraq geri qayatrir
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -69,11 +87,12 @@ class CategoryAPIView(APIView):
         serializer = CategorySerializer(categorys,many=True)
         return Response(serializer.data)
     
+    @transaction.atomic
     def post(self,request):
         serializer = CategorySerializer(data=request.data)
-
         if serializer.is_valid():
             serializer.save()
+            send_category_creation_email()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -142,10 +161,12 @@ class AddressAPIview(APIView):
         serializer = AddressSerializer(address, many=True)
         return Response(serializer.data)
     
+    @transaction.atomic
     def post(self,request):
         serializer = AddressSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            send_address_creation_email()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -197,12 +218,14 @@ class SupplierAPIview(APIView):
         serializer = SupplierSerializer(supplier, many=True)
         return Response(serializer.data)
     
+    @transaction.atomic
     def post(self,request):
         # yenide yaratmagcun SerializerCreateSerilizerdennistifade olunur.cunki addresden Id gotur
         serializer = SupplierCreateSerializer(data=request.data) 
 
         if serializer.is_valid():
             serializer.save()
+            send_supplier_creation_email()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -245,7 +268,6 @@ class SupplierCompanyNameRevealerAPIView(APIView):
     def get(self,request,company_name):
         company_name = get_object_or_404(Supplier, company_name=company_name)
         serializer = SupplierSerializer(company_name)
-        
         return Response(serializer.data,status=status.HTTP_200_OK)
     
 
