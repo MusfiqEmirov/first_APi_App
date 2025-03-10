@@ -6,7 +6,7 @@ def send_product_creation_email():
         subject="uyudunmuuu???",
         message="necesiz muellim?",
         from_email=settings.EMAIL_HOST_USER,
-        recipient_list=["mammadaliyevmammadali@gmail.com"],#)))
+        recipient_list=[settings.EMAIL_HOST_USER],#)))
     )
 
 def send_category_creation_email():

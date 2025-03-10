@@ -1,12 +1,18 @@
 from rest_framework.views import APIView, status
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
-from first_app.models import Product, Category, Adress, Supplier
-from first_app.serializers import ProductSerializer, CategorySerializer, AddressSerializer, SupplierSerializer, ProductCreateSerializer, SupplierCreateSerializer
 from django.shortcuts import get_object_or_404
 from django.http.response import Http404
-
 from django.conf import settings
+
+from first_app.models import Product, Category, Adress, Supplier
+from first_app.serializers import (ProductSerializer,
+                                  CategorySerializer,
+                                  AddressSerializer,
+                                  SupplierSerializer,
+                                  ProductCreateSerializer,
+                                  SupplierCreateSerializer
+                                  )
 
 # from notifications.notify import (
 #     send_product_creation_email,
@@ -32,6 +38,7 @@ class ProductsAPIView(APIView):
         if serializer.is_valid(): # validation gedir
             try:
                 with transaction.atomic(): # ya hamisi isleyecek ve mail gedecek
+                    serializer.save()
                     # ugurlu melyatda 201 status kodu qaytarir ve elave olundu
                     return Response(serializer.data, status=status.HTTP_201_CREATED) 
             except Exception as e: # ya hec biri iwlemeiyecek mailde getm,eyecek
