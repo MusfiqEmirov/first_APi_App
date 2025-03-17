@@ -21,6 +21,7 @@ def send_category_creation_email():
         recipient_list=[settings.EMAIL_HOST_USER],
     )
 
+@shared_task
 def send_address_creation_email():
     send_mail(
         subject="Address Created ❤️",
@@ -28,7 +29,8 @@ def send_address_creation_email():
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[settings.EMAIL_HOST_USER],
     )
-
+    
+@shared_task
 def send_supplier_creation_email():
     send_mail(
         subject="Supplier Created ❤️",

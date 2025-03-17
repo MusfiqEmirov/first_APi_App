@@ -1,6 +1,6 @@
 # Django REST Framework API Documentation
 
-This project provides a set of APIs for managing **Products**, **Categories**, **Addresses**, and **Suppliers** using Django REST Framework.
+This project provides a set of APIs for managing **Products**, **Categories**, **Addresses**, and **Suppliers** using Django REST Framework. It also includes Celery for asynchronous task handling and Docker for containerization.
 
 ---
 
@@ -119,19 +119,59 @@ This project provides a set of APIs for managing **Products**, **Categories**, *
 
 ---
 
-## How to Use
+## Asynchronous Tasks with Celery
+
+The project uses Celery for handling asynchronous tasks such as sending emails when a new product, category, address, or supplier is created.
+
+### Tasks
+
+1. **Product Creation Email**
+   - Sends an email when a new product is created.
+   - Task: `send_product_creation_email`
+
+2. **Category Creation Email**
+   - Sends an email when a new category is created.
+   - Task: `send_category_creation_email`
+
+3. **Address Creation Email**
+   - Sends an email when a new address is created.
+   - Task: `send_address_creation_email`
+
+4. **Supplier Creation Email**
+   - Sends an email when a new supplier is created.
+   - Task: `send_supplier_creation_email`
+
+### Signal Handlers
+
+- **Product Signal Handler**
+  - Triggers `send_product_creation_email` when a product is saved.
+- **Category Signal Handler**
+  - Triggers `send_category_creation_email` when a category is saved.
+- **Address Signal Handler**
+  - Triggers `send_address_creation_email` when an address is saved.
+- **Supplier Signal Handler**
+  - Triggers `send_supplier_creation_email` when a supplier is saved.
+
+---
+
+## Docker Setup
+
+The project is containerized using Docker. The `docker-compose.yml` file defines three services:
+
+1. **Web**
+   - Runs the Django development server.
+   - Depends on Redis.
+   - Automatically runs migrations and starts the server.
+
+2. **Redis**
+   - Used as a message broker for Celery.
+
+3. **Celery**
+   - Runs Celery workers for handling asynchronous tasks.
+
+### How to Run with Docker
 
 1. Clone the repository.
-2. Install dependencies using `pip install -r requirements.txt`.
-3. Run migrations using `python manage.py migrate`.
-4. Start the development server using `python manage.py runserver`.
-5. Access the API endpoints as described above.
-
----
-
-## Notes
-
-- Ensure that the `address` is created before creating a `supplier`, as the `supplier` requires an `address` ID.
-- For creating a `product`, ensure that the `supplier` and `categories` already exist, as they are required fields.
-
----
+2. Build and start the containers using:
+   ```bash
+   docker-compose up --build
