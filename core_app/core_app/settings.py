@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'first_app',
-    'view_manager'
+    'view_manager',
+    'celery',
+    'django_celery_results'
 ]
 
 MIDDLEWARE = [
@@ -132,3 +134,11 @@ EMAIL_HOST_USER = 'musfiq.emirov5@gmail.com'  # SMTP server username
 EMAIL_HOST_PASSWORD = 'iuae zwwp zkte mjig'  # SMTP server password
 EMAIL_USE_TLS = True  # True for TLS, False for SSL
 EMAIL_USE_SSL = False  # Set to True if using SSL
+
+# Celery Configuration Options
+# Celery Configuration
+CELERY_TIMEZONE = "Asia/Baku"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'

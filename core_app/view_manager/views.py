@@ -1,9 +1,10 @@
 from rest_framework.views import APIView, status
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
 from django.http.response import Http404
-from django.conf import settings
+from django.db import transaction
+# from django.conf import settings
+# from rest_framework.exceptions import NotFound
 
 from first_app.models import Product, Category, Adress, Supplier
 from first_app.serializers import (ProductSerializer,
@@ -20,8 +21,6 @@ from first_app.serializers import (ProductSerializer,
 #     send_address_creation_email,
 #     send_supplier_creation_email,
 # )
-
-from django.db import transaction
 
 
 class ProductsAPIView(APIView):

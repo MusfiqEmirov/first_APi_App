@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py makemigrations &&
+            python manage.py migrate &&
+            python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    environment:
+      - DJANGO_SETTINGS_MODULE=core_app.settings
+    entrypoint: ["./wait-for-it.sh", "redis:6379", "--", "sh", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+  
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+  
+  celery:
+    build: .
+    command: celery -A core_app.celery worker --loglevel=info  
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
