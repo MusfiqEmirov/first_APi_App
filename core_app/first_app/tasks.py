@@ -7,8 +7,8 @@ from celery import shared_task
 def send_product_creation_email():
     send_mail(
         subject="yatmisiz?",
-        message="eger bu mesaji aldizsa  docker isleyir ve product sukunducku yaranir\n"
-        "zehmel olmasa bir nezer yetirin\n"
+        message="eger bu mesaji aldizsa  docker isleyir ve product sukunducku yaranir ?\n"
+        "zehmel olmasa bir nezer yetirin \n"
         "https://github.com/MusfiqEmirov/first_APi_App.git ",
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=["mammadaliyevmammadali@gmail.com"],
