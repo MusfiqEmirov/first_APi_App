@@ -11,3 +11,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app/
 
 EXPOSE 8000
+
+USER 1000:1000
